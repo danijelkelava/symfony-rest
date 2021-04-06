@@ -40,8 +40,6 @@ final class EntityFactory
         /** @var EntityInterface $entity */
         $entity = $this->serializer->deserialize($data, $class, $format, $context);
 
-        //$this->validator->validate($entity, $groups);
-
         return $entity;
     }
 }

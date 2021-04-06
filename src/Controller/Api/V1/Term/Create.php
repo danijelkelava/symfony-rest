@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api\V1\Term;
 
+use App\Controller\BaseController;
 use App\Entity\Term\Term;
 use App\Factory\EntityFactory;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -17,10 +18,9 @@ use App\Service\GithubAPIService;
 use App\Service\ExtractorService;
 
 
-class Create 
+class Create extends BaseController
 {
 
-    private $serializer;
     private $repository;
     private $extractor;
     private $entityFactory;
@@ -34,11 +34,12 @@ class Create
         GithubAPIService $githubAPIService
     )
     {
-        $this->serializer = $serializer;
         $this->repository = $repository;
         $this->extractor = $extractor;
         $this->entityFactory = $entityFactory;
         $this->githubAPIService = $githubAPIService;
+
+        parent::__construct($serializer);
     }
 
     /**
@@ -51,6 +52,7 @@ class Create
      * @SWG\Parameter(
      *     name="name",
      *     in="body",
+     *     required=true,
      *     description="JSON body",
      *     type="json",
      *     @Model(type=Term::class, groups={"term:create"})
@@ -63,14 +65,11 @@ class Create
      */
     public function __invoke(Request $request): JsonResponse
     {
-        // extract data from request
-        //$data = $this->extractor->extractFromJson([], $request->getContent());
-
-        //json string
-        $data = $request->getContent();
-        
+        // validate parameters from json
+        $json = $this->validateJson(['name'], $request->getContent());
+       
         // create term instance from data
-        $term = $this->entityFactory->createFromJson($data, Term::class, $groups = ['term:create']);
+        $term = $this->entityFactory->createFromJson($json, Term::class, $groups = ['term:create']);
 
         // implement term manager
         $response = $this->githubAPIService->searchIssues('Kelava');
