@@ -26,6 +26,11 @@ class Term implements EntityInterface
     private $name;
 
     /**
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $totalCount;
+
+    /**
      * @ORM\Column(type="float")
      * @Groups({"term:get"})
      */
@@ -46,6 +51,18 @@ class Term implements EntityInterface
         $this->name = $name;
 
         return $this;
+    }
+
+    public function setTotalCount(int $count) : self
+    {
+        $this->totalCount = $count;
+
+        return $this;
+    }
+
+    public function getTotalCount() : ?int
+    {
+        return $this->totalCount;        
     }
 
     public function getScore(): ?float

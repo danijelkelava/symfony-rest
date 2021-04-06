@@ -4,6 +4,7 @@ namespace App\Controller\Api\V1\Term;
 
 use App\Entity\Term\Term;
 use App\Factory\EntityFactory;
+use Symfony\Component\Serializer\SerializerInterface;
 use App\Repository\Term\TermRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,25 +13,32 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use App\Service\GithubAPIService;
 use App\Service\ExtractorService;
-use App\Responder\Responder;
+
 
 class Create 
 {
 
+    private $serializer;
     private $repository;
     private $extractor;
     private $entityFactory;
+    private $githubAPIService;
 
     public function __construct(
+        SerializerInterface $serializer,
         TermRepository $repository, 
         ExtractorService $extractor, 
-        EntityFactory $entityFactory
+        EntityFactory $entityFactory,
+        GithubAPIService $githubAPIService
     )
     {
+        $this->serializer = $serializer;
         $this->repository = $repository;
         $this->extractor = $extractor;
         $this->entityFactory = $entityFactory;
+        $this->githubAPIService = $githubAPIService;
     }
 
     /**
@@ -53,7 +61,7 @@ class Create
      *     @Model(type=Term::class, groups={"term:get"})
      * )
      */
-    public function __invoke(Request $request, Responder $responder): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
         // extract data from request
         //$data = $this->extractor->extractFromJson([], $request->getContent());
@@ -61,14 +69,23 @@ class Create
         //json string
         $data = $request->getContent();
         
-        // create term from data
+        // create term instance from data
         $term = $this->entityFactory->createFromJson($data, Term::class, $groups = ['term:create']);
-        $term->setScore(5.5);
 
         // implement term manager
+        $response = $this->githubAPIService->searchIssues('Kelava');
+
+        //$content = json_decode($response->getContent(), true);
+        $content = $this->serializer->decode($response->getContent(), 'json');
+
+        $term->setTotalCount($content['total_count']);
+        $term->setScore(5.5);
+
         $this->repository->save($term);
 
-        return $responder($term, 'json', ['term:get'], true);
+        $result = $this->serializer->serialize($term, 'json', ['groups' => ['term:get']]);
+
+        return new JsonResponse($result, Response::HTTP_OK, [], true);
 
     }
 }
