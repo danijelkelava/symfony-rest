@@ -36,6 +36,21 @@ class Term implements EntityInterface
      */
     private $score;
 
+    /**
+     * @var \DateTimeInterface
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     * @Assert\NotNull()
+     * @Assert\Type("DateTimeInterface")
+     */
+    private $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;

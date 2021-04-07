@@ -4,8 +4,6 @@ namespace App\Tests\Controller\Api\V1\Term;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use App\Kernel;
 
 class RetrieveTest extends WebTestCase
 {
