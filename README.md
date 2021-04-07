@@ -9,7 +9,7 @@ This simple app calculates popularity score for the search term using github api
 
 Clone repository `git clone https://github.com/danijelkelava/symfony-rest.git`
 
-git pull 
+
 
 ## Docker Setup
 
@@ -20,6 +20,12 @@ After that, run `docker exec -it sf_web ./setup.sh`, which will install php depe
 setup.sh needs to be executable
 
 Swagger docs will be available at: `http://localhost:8888/docs`  
+
+#### Default database credentials:
+- Server:  `symfony_db`
+- Username: `user`
+- Password: `user`
+- Database: `db`
 
 ## Sample Requests
 
