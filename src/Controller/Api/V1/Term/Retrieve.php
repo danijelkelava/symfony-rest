@@ -12,6 +12,7 @@ use App\Service\GithubAPIService;
 use Nelmio\ApiDocBundle\Annotation\Areas;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -28,17 +29,17 @@ class Retrieve extends BaseController
     /**
      * @var GithubAPIService
      */
-    private $githubApiService;
+    private $githubAPIService;
 
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         TermManager $termManager,
-        GithubAPIService $githubApiService
+        GithubAPIService $githubAPIService
     )
     {
         $this->termManager = $termManager;
-        $this->githubApiService = $githubApiService;
+        $this->githubAPIService = $githubAPIService;
 
         parent::__construct($serializer, $validator);
     }
@@ -68,7 +69,7 @@ class Retrieve extends BaseController
     public function __invoke(string $name): JsonResponse
     {
         $criteria = ['name' => $name];
-        $term = $this->repository->findOneBy($criteria);
+        $term = $this->termManager->findTermByCriteria($criteria);
 
         if (! $term) {
             $json = $this->serializer->serialize($criteria, 'json');

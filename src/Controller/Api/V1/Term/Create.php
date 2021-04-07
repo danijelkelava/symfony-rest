@@ -31,17 +31,17 @@ class Create extends BaseController
     /**
      * @var GithubAPIService
      */
-    private $githubApiService;
+    private $githubAPIService;
 
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         TermManager $manager,
-        GithubAPIService $githubApiService
+        GithubAPIService $githubAPIService
     )
     {
         $this->termManager = $manager;
-        $this->githubApiService = $githubApiService;
+        $this->githubAPIService = $githubAPIService;
 
         parent::__construct($serializer, $validator);
     }
@@ -79,9 +79,9 @@ class Create extends BaseController
         }
 
         // create array
-        $content = $this->serializer->decode($response->getContent(), 'json');
+        $content = $this->serializer->decode($request->getContent(), 'json');
 
-        $term = $this->termManager->findTermByName($content['name']);
+        $term = $this->termManager->findTermByCriteria($content);
 
         if ($term) {
             throw new BadRequestHttpException("Term exists");

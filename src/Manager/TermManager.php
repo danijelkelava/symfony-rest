@@ -111,9 +111,9 @@ class TermManager
 	 * @param string $name
 	 * @return Term|null
 	 */	
-	public function findTermByName(string $name) : ?Term
+	public function findTermByCriteria(array $criteria) : ?Term
 	{
-		return $this->repository->findOneBy(['name' => $name]);
+		return $this->repository->findOneBy($criteria);
 	}
 
     /**
