@@ -3,16 +3,15 @@
 namespace App\Controller\Api\V1\Term;
 
 use App\Controller\BaseController;
-use App\Manager\TermManager;
 use App\Entity\Term\Term;
-use App\Model\CreateTermRequest;
-use App\Factory\EntityFactory;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Manager\TermManager;
+use App\Model\CreateTermRequest;
 use App\Service\GithubAPIService;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
