@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BaseController extends AbstractController
 {
@@ -15,9 +16,15 @@ class BaseController extends AbstractController
      */
     public $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * @var ValidatorInterface
+     */
+    public $validator;
+
+    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator)
     {
         $this->serializer = $serializer;
+        $this->validator = $validator;
     }
 
     /**

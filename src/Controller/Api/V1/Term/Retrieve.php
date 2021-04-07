@@ -5,28 +5,35 @@ namespace App\Controller\Api\V1\Term;
 use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Entity\Term\Term;
-use App\Repository\Term\TermRepository;
-use App\Responder\Responder;
+use App\Manager\TermManager;
+use App\Service\GithubAPIService;
 use Nelmio\ApiDocBundle\Annotation\Areas;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Retrieve extends BaseController
 {
 
-    private $repository;
+    private $termManager;
+    private $githubApiService;
 
     public function __construct(
         SerializerInterface $serializer,
-        TermRepository $repository
+        ValidatorInterface $validator,
+        TermManager $termManager,
+        GithubAPIService $githubApiService
     )
     {
-        $this->repository = $repository;
-        parent::__construct($serializer);
+        $this->termManager = $termManager;
+        $this->githubApiService = $githubApiService;
+
+        parent::__construct($serializer, $validator);
     }
     /**
      * @Route(path="/api/v1/term/{name}", methods={"GET"}, name="v1_term_get")
@@ -49,19 +56,35 @@ class Retrieve extends BaseController
      * )
      *
      * @param string $name
-     * @param Responder $responder
      * @return JsonResponse
      */
-    public function __invoke(string $name, Responder $responder): JsonResponse
+    public function __invoke(string $name): JsonResponse
     {
-
-        $term = $this->repository->findOneBy(['name' => $name]);
+        $criteria = ['name' => $name];
+        $term = $this->repository->findOneBy($criteria);
 
         if (! $term) {
-            throw new BadRequestHttpException("Term with name $name not found");
+            $json = $this->serializer->serialize($criteria, 'json');
+            $term = $this->termManager->createFromJson($json, ['term:create']);            
         }
 
+        // search issues
+        $response = $this->githubAPIService->searchIssues($term->getName());
 
-        return $responder($term, 'json', ['term:get'], true);
+        if (200 !== $response->getStatusCode()) {
+            throw new HttpException($response->getStatusCode());
+        }
+        
+        $responseContent = $this->serializer->decode($response->getContent(), 'json');
+
+        // calculate score
+        $term = $this->termManager->calculatePopularityScore($term, $responseContent);
+
+        $this->termManager->update($term);
+
+        $result = $this->serializer->serialize($term, 'json', ['groups' => ['term:get']]);
+
+        return new JsonResponse($result, Response::HTTP_OK, [], true);
+
     }
 }

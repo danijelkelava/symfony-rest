@@ -3,43 +3,40 @@
 namespace App\Controller\Api\V1\Term;
 
 use App\Controller\BaseController;
+use App\Manager\TermManager;
 use App\Entity\Term\Term;
+use App\Model\CreateTermRequest;
 use App\Factory\EntityFactory;
 use Symfony\Component\Serializer\SerializerInterface;
-use App\Repository\Term\TermRepository;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\GithubAPIService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use App\Service\GithubAPIService;
-use App\Service\ExtractorService;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 
 class Create extends BaseController
 {
 
-    private $repository;
-    private $extractor;
-    private $entityFactory;
-    private $githubAPIService;
+    private $termManager;
+    private $githubApiService;
 
     public function __construct(
         SerializerInterface $serializer,
-        TermRepository $repository, 
-        ExtractorService $extractor, 
-        EntityFactory $entityFactory,
-        GithubAPIService $githubAPIService
+        ValidatorInterface $validator,
+        TermManager $manager,
+        GithubAPIService $githubApiService
     )
     {
-        $this->repository = $repository;
-        $this->extractor = $extractor;
-        $this->entityFactory = $entityFactory;
-        $this->githubAPIService = $githubAPIService;
+        $this->termManager = $manager;
+        $this->githubApiService = $githubApiService;
 
-        parent::__construct($serializer);
+        parent::__construct($serializer, $validator);
     }
 
     /**
@@ -52,7 +49,6 @@ class Create extends BaseController
      * @SWG\Parameter(
      *     name="name",
      *     in="body",
-     *     required=true,
      *     description="JSON body",
      *     type="json",
      *     @Model(type=Term::class, groups={"term:create"})
@@ -65,22 +61,39 @@ class Create extends BaseController
      */
     public function __invoke(Request $request): JsonResponse
     {
-        // validate parameters from json
-        $json = $this->validateJson(['name'], $request->getContent());
-       
-        // create term instance from data
-        $term = $this->entityFactory->createFromJson($json, Term::class, $groups = ['term:create']);
 
-        // implement term manager
-        $response = $this->githubAPIService->searchIssues('Kelava');
+        /** @var CreateTermRequest $createTermRequestModel */
+        $createTermRequestModel = $this->serializer->deserialize($request->getContent(), CreateTermRequest::class, 'json');
 
-        //$content = json_decode($response->getContent(), true);
+        $errors = $this->validator->validate($createTermRequestModel);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse((string)$errors, Response::HTTP_BAD_REQUEST);
+        }
+
+        // create array
         $content = $this->serializer->decode($response->getContent(), 'json');
 
-        $term->setTotalCount($content['total_count']);
-        $term->setScore(5.5);
+        $term = $this->termManager->findTermByName($content['name']);
 
-        $this->repository->save($term);
+        if ($term) {
+            throw new BadRequestHttpException("Term exists");
+        }
+       
+        // create term instance from data
+        $term = $this->termManager->createFromJson($request->getContent(), ['term:create']);
+
+        $response = $this->githubAPIService->searchIssues($term->getName());
+
+        if (200 !== $response->getStatusCode()) {
+            throw new HttpException($response->getStatusCode());
+        }
+        
+        $responseContent = $this->serializer->decode($response->getContent(), 'json');
+
+        $term = $this->termManager->calculatePopularityScore($term, $responseContent);
+
+        $this->termManager->save($term);
 
         $result = $this->serializer->serialize($term, 'json', ['groups' => ['term:get']]);
 

@@ -26,11 +26,6 @@ final class EntityFactory
         return $this->create($data, $class, 'json', $groups, $context);
     }
 
-    public function createFromArray(array $data, string $class, array $groups = [], array $context = []): EntityInterface
-    {
-        return $this->create($data, $class, 'array', $groups, $context);
-    }
-
     private function create($data, string $class, string $format, array $groups = [], array $context = []): EntityInterface
     {
         if (\count($groups)) {
