@@ -9,7 +9,7 @@ This simple app calculates popularity score for the search term using github api
 
 Clone repository `git clone https://github.com/danijelkelava/symfony-rest.git`
 
-
+Checkout `master` branch
 
 ## Docker Setup
 
