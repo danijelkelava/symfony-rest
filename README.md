@@ -46,8 +46,8 @@ http://localhost:8888/api/v1/term/{name}
 }
 
 ## Run Tests
-
-$ bin/phpunit
+Login in `sf_web` container `docker exec -it sf_web bash`
+Run  `./bin/phpunit`
 
 
 
