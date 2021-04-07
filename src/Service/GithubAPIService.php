@@ -10,6 +10,12 @@ use Symfony\Component\HttpClient\Response\TraceableResponse;
 class GithubAPIService extends AbstractClient
 {
 
+    /**
+     * Search github issues
+     *
+     * @param string $term
+     * @return TraceableResponse
+     */
     public function searchIssues(string $term) : TraceableResponse
     {
         $response = $this->getClient()->request(

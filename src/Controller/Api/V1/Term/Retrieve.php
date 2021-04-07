@@ -20,7 +20,14 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class Retrieve extends BaseController
 {
 
+    /**
+     * @var TermManager
+     */
     private $termManager;
+
+    /**
+     * @var GithubAPIService
+     */
     private $githubApiService;
 
     public function __construct(

@@ -8,7 +8,15 @@ use App\Factory\EntityFactory;
 
 class TermManager 
 {
+
+    /**
+     * @var TermRepository
+     */
 	private $repository;
+
+    /**
+     * @var EntityFactory
+     */
 	private $entityFactory;
 
 	public function __construct(
