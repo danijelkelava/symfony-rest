@@ -65,28 +65,12 @@ class TermManager
 	}
 
 	/**
-	 * Recalculate popularity score
-	 *
-	 * @param Term $term
-	 * @param array $responseContent
-	 * @return Term 
-	 */
-	public function calculatePopularityScore(Term $term, array $responseContent) : Term
-	{
-		// populate model
-        $term->setTotalCount((int)$responseContent['total_count']);
-        $term->setScore($this->calculateScore((int)$responseContent['total_count']));
-
-        return $term;
-	}
-
-	/**
-	 * Recalculate popularity score
+	 * Set score
 	 *
 	 * @param Term $term
 	 * @return Term 
 	 */
-	public function recalculatePopularityScore(Term $term) : Term
+	public function setScore(Term $term) : Term
 	{
         $term->setScore($this->calculateScore($term->getTotalCount()));
 
@@ -106,9 +90,9 @@ class TermManager
 	}
 
 	/**
-	 * Find term by name
+	 * Find term by criteria
 	 *
-	 * @param string $name
+	 * @param array $criteria
 	 * @return Term|null
 	 */	
 	public function findTermByCriteria(array $criteria) : ?Term

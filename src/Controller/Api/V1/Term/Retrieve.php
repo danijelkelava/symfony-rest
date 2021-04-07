@@ -65,30 +65,45 @@ class Retrieve extends BaseController
      *
      * @param string $name
      * @return JsonResponse
+     * @throws BadRequestHttpException
+     * @throws HttpException
      */
     public function __invoke(string $name): JsonResponse
     {
-        $criteria = ['name' => $name];
-        $term = $this->termManager->findTermByCriteria($criteria);
+        
+        if (! $name) {
+            throw new BadRequestHttpException('Name is required');           
+        }
+
+        $term = $this->termManager->findTermByCriteria(['name' => $name]);
 
         if (! $term) {
-            $json = $this->serializer->serialize($criteria, 'json');
-            $term = $this->termManager->createFromJson($json, ['term:create']);            
-        }
+            $json = $this->serializer->serialize(['name' => $name], 'json');
 
-        // search issues
-        $response = $this->githubAPIService->searchIssues($term->getName());
+            // create term from json
+            $term = $this->termManager->createFromJson($json, ['term:create']);   
 
-        if (200 !== $response->getStatusCode()) {
-            throw new HttpException($response->getStatusCode());
-        }
-        
-        $responseContent = $this->serializer->decode($response->getContent(), 'json');
+            // search issues
+            $response = $this->githubAPIService->searchIssues($term->getName());
 
-        // calculate score
-        $term = $this->termManager->calculatePopularityScore($term, $responseContent);
+            if (200 !== $response->getStatusCode()) {
+                throw new HttpException($response->getStatusCode());
+            }
+            
+            $responseContent = $this->serializer->decode($response->getContent(), 'json');
 
-        $this->termManager->update($term);
+            $term->setTotalCount((int)$responseContent['total_count']);
+
+            // set score
+            $term = $this->termManager->setScore($term);   
+
+            $this->termManager->save($term);    
+
+        }else{
+
+            $term = $this->termManager->setScore($term);
+
+        }        
 
         $result = $this->serializer->serialize($term, 'json', ['groups' => ['term:get']]);
 

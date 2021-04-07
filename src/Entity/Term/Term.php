@@ -32,7 +32,6 @@ class Term implements EntityInterface
     private $totalCount;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"term:get"})
      */
     private $score;
@@ -83,7 +82,7 @@ class Term implements EntityInterface
 
     public function getScore(): ?float
     {
-        return $this->score;
+        return number_format($this->score, 2);
     }
 
     public function setScore(float $score): self

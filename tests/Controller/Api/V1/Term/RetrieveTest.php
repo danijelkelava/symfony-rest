@@ -27,7 +27,7 @@ class RetrieveTest extends WebTestCase
 
         $this->client->request(
             'GET',
-            '/api/v1/term/scala1'
+            '/api/v1/term/scala'
         );
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
