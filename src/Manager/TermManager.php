@@ -85,7 +85,7 @@ class TermManager
 	 */
 	public function calculateScore(int $totalCount) : float
 	{
-		$maxCount = $totalCount > $this->getMaxTotalCount() ? $totalCount : $this->getMaxTotalCount();
+		$maxCount = $totalCount > $this->repository->getMaxTotalCount() ? $totalCount : $this->repository->getMaxTotalCount();
 		return ($totalCount/$maxCount) * 10;
 	}
 
@@ -99,22 +99,4 @@ class TermManager
 	{
 		return $this->repository->findOneBy($criteria);
 	}
-
-    /**
-     * Gets the max total count of all terms.
-     *
-     *
-     * @return mixed The scalar result.
-     *
-     * @throws NoResultException        If the query returned no result.
-     * @throws NonUniqueResultException If the query result is not unique.
-     */
-	public function getMaxTotalCount()
-	{
-		return $this->repository->createQueryBuilder('term')
-					->select('MAX(term.totalCount)')
-					->getQuery()
-            		->getSingleScalarResult();
-	}
-
 }

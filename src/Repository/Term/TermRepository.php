@@ -14,4 +14,21 @@ use App\Repository\BaseRepository;
 class TermRepository extends BaseRepository
 {
     public const ENTITY_CLASS_NAME = Term::class;
+
+    /**
+     * Gets the max total count of all terms.
+     *
+     *
+     * @return mixed The scalar result.
+     *
+     * @throws NoResultException        If the query returned no result.
+     * @throws NonUniqueResultException If the query result is not unique.
+     */
+	public function getMaxTotalCount()
+	{
+		return $this->createQueryBuilder('term')
+					->select('MAX(term.totalCount)')
+					->getQuery()
+            		->getSingleScalarResult();
+	}
 }
