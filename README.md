@@ -15,7 +15,7 @@ Checkout `master` branch
 
 Run `docker-compose up -d` to build up the containers (sf_web/sf_db/sf_adm).
 
-After that, run `docker exec -it sf_web ./setup.sh`, which will install php dependencies and create db schema.
+After that, login to `sf_web` container `docker exec -it sf_web bash`, and run `./setup.sh` which will install php dependencies and create db schema.
 
 setup.sh needs to be executable
 
@@ -46,8 +46,7 @@ http://localhost:8888/api/v1/term/{name}
 }
 
 ## Run Tests
-Login in `sf_web` container `docker exec -it sf_web bash`
-Run  `./bin/phpunit`
+Login to `sf_web` container `docker exec -it sf_web bash` and run  `./bin/phpunit`
 
 
 
