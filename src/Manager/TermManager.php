@@ -72,7 +72,10 @@ class TermManager
 	 */
 	public function setScore(Term $term) : Term
 	{
-        $term->setScore($this->calculateScore($term->getTotalCount()));
+		$totalCount = $term->getTotalCount();
+		$maxTotalCount = $this->getMaxTotalCount();
+
+        $term->setScore($this->calculateScore($totalCount, $maxTotalCount));
 
         return $term;		
 	}
@@ -83,9 +86,10 @@ class TermManager
 	 * @param int $totalCount
 	 * @return float
 	 */
-	public function calculateScore(int $totalCount) : float
+	public function calculateScore(int $totalCount, int $maxTotalCount) : float
 	{
-		$maxCount = $totalCount > $this->repository->getMaxTotalCount() ? $totalCount : $this->repository->getMaxTotalCount();
+		$maxCount = $totalCount > $maxTotalCount ? $totalCount : $maxTotalCount;
+
 		return ($totalCount/$maxCount) * 10;
 	}
 
@@ -98,5 +102,10 @@ class TermManager
 	public function findTermByCriteria(array $criteria) : ?Term
 	{
 		return $this->repository->findOneBy($criteria);
+	}
+
+	public function getMaxTotalCount() : int
+	{
+		return $this->repository->getMaxTotalCount();
 	}
 }

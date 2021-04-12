@@ -1,7 +1,8 @@
 Symfony REST
 ===============
 
-This simple app calculates popularity score for the search term using github api service
+This simple app calculates popularity score for the search term using github api service. 
+Calculation 
 
 ## Installation
 
@@ -46,7 +47,15 @@ http://localhost:8888/api/v1/term/{name}
 }
 
 ## Run Tests
-Login to `sf_web` container `docker exec -it sf_web bash` and run  `./bin/phpunit`
+Login to `sf_web` container `docker exec -it sf_web bash` 
+
+Functional tests:
+
+	`./bin/phpunit tests/Functional`
+
+Unit tests:
+
+	`./bin/phpunit tests/Unit`
 
 
 
