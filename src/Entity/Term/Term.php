@@ -82,7 +82,7 @@ class Term implements EntityInterface
 
     public function getScore(): ?float
     {
-        return number_format($this->score, 2);
+        return $this->score;
     }
 
     public function setScore(float $score): self

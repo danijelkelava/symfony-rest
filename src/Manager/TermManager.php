@@ -3,6 +3,7 @@
 namespace App\Manager;
 
 use App\Entity\Term\Term;
+use App\Entity\EntityInterface;
 use App\Repository\Term\TermRepository;
 use App\Factory\EntityFactory;
 
@@ -35,7 +36,7 @@ class TermManager
 	 * @param array $groups
 	 * @return Term $term
 	 */
-	public function createFromJson(string $json, array $groups = []) : Term
+	public function createFromJson(string $json, array $groups = []) : EntityInterface
 	{
 		$term = $this->entityFactory->createFromJson($json, Term::class, $groups);
 
@@ -48,7 +49,7 @@ class TermManager
 	 * @param Term $term
 	 * @return Term $term
 	 */
-	public function save(Term $term) : Term
+	public function save(Term $term) : EntityInterface
 	{
 		return $this->repository->save($term);
 	}
@@ -59,7 +60,7 @@ class TermManager
 	 * @param Term $term
 	 * @return Term $term
 	 */
-	public function update(Term $term) : Term
+	public function update(Term $term) : EntityInterface
 	{
 		return $this->repository->merge($term);
 	}
@@ -75,7 +76,9 @@ class TermManager
 		$totalCount = $term->getTotalCount();
 		$maxTotalCount = $this->getMaxTotalCount();
 
-        $term->setScore($this->calculateScore($totalCount, $maxTotalCount));
+		$score = $this->calculateScore($totalCount, $maxTotalCount);
+		
+        $term->setScore(number_format($score, 2));
 
         return $term;		
 	}

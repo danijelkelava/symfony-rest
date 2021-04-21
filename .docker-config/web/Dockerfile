@@ -9,7 +9,7 @@ RUN service apache2 restart
 #RUN docker-php-ext-install intl
 
 #RUN docker-php-ext-install zip
-#RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install pdo_mysql
 #RUN docker-php-ext-install gd
 
 RUN echo 'memory_limit = 2G' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini;

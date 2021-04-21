@@ -7,7 +7,7 @@ use App\Entity\Term\Term;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Manager\TermManager;
-use App\Service\GithubAPIService;
+use App\Manager\SearchManager;
 use Nelmio\ApiDocBundle\Annotation\Areas;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -27,19 +27,19 @@ class Retrieve extends BaseController
     private $termManager;
 
     /**
-     * @var GithubAPIService
+     * @var SearchManager
      */
-    private $githubAPIService;
+    private $searchManager;
 
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         TermManager $termManager,
-        GithubAPIService $githubAPIService
+        SearchManager $searchManager
     )
     {
         $this->termManager = $termManager;
-        $this->githubAPIService = $githubAPIService;
+        $this->searchManager = $searchManager;
 
         parent::__construct($serializer, $validator);
     }
@@ -84,7 +84,7 @@ class Retrieve extends BaseController
             $term = $this->termManager->createFromJson($json, ['term:create']);   
 
             // search issues
-            $response = $this->githubAPIService->searchIssues($term->getName());
+            $response = $this->searchManager->searchTerm($term->getName());
 
             if (200 !== $response->getStatusCode()) {
                 throw new HttpException($response->getStatusCode());

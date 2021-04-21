@@ -58,5 +58,6 @@ Unit tests:
 	`./bin/phpunit tests/Unit`
 
 
-
+## Testing
+We are using https://github.com/dmaicher/doctrine-test-bundle when testing, it will return our database to a previous state
 
