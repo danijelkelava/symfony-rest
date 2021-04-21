@@ -9,6 +9,7 @@ use App\Tests\DatabasePrimer;
 class TermTest extends KernelTestCase
 {
 
+	/** @var EntityManagerInterface */
 	private $entityManager;
 
 	/**
@@ -22,6 +23,14 @@ class TermTest extends KernelTestCase
 		DatabasePrimer::prime($kernel);
 
 		$this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
+	}
+
+	protected function tearDown() : void
+	{
+		parent::tearDown();
+
+		$this->entityManager->close();
+		$this->entityManager = null;
 	}
 
 	/** @test */

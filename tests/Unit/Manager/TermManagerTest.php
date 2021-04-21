@@ -48,6 +48,15 @@ class TermManagerTest extends KernelTestCase
 
 	}
 
+	protected function tearDown() : void
+	{
+		parent::tearDown();
+
+		$this->entityFactory = null;
+		$this->termRepository = null;
+		$this->termManager = null;
+	}
+
 	/** @test */
 	public function term_manager_creates_term_instance()
 	{
