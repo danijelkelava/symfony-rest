@@ -10,16 +10,10 @@ abstract class AbstractClient
     /**
      * @var HttpClientInterface
      */
-    protected $client;
+    protected HttpClientInterface $client;
 
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
     }
-
-    public function getClient() : HttpClientInterface
-    {
-        return $this->client;
-    }
-
 }

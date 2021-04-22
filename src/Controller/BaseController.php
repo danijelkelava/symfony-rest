@@ -14,12 +14,12 @@ class BaseController extends AbstractController
     /**
      * @var SerializerInterface
      */
-    public $serializer;
+    public SerializerInterface $serializer;
 
     /**
      * @var ValidatorInterface
      */
-    public $validator;
+    public ValidatorInterface $validator;
 
     public function __construct(SerializerInterface $serializer, ValidatorInterface $validator)
     {

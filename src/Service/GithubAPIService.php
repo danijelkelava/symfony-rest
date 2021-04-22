@@ -7,7 +7,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpClient\Response\TraceableResponse;
 
-class GithubAPIService extends AbstractClient
+final class GithubAPIService extends AbstractClient
 {
 
     /**
@@ -18,7 +18,7 @@ class GithubAPIService extends AbstractClient
      */
     public function searchIssues(string $term) : TraceableResponse
     {
-        $response = $this->getClient()->request(
+        $response = $this->client->request(
             'GET',
             'https://api.github.com/search/issues',
             [

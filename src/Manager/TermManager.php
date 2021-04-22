@@ -7,18 +7,18 @@ use App\Entity\EntityInterface;
 use App\Repository\Term\TermRepository;
 use App\Factory\EntityFactory;
 
-class TermManager 
+final class TermManager 
 {
 
     /**
      * @var TermRepository
      */
-	private $repository;
+	private TermRepository $repository;
 
     /**
      * @var EntityFactory
      */
-	private $entityFactory;
+	private EntityFactory $entityFactory;
 
 	public function __construct(
         TermRepository $repository, 

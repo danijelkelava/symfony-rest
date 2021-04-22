@@ -10,7 +10,7 @@ final class EntityFactory
     /**
      * @var SerializerInterface
      */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     /**
      * EntityFactory constructor.

@@ -18,18 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class Retrieve extends BaseController
+final class Retrieve extends BaseController
 {
 
     /**
      * @var TermManager
      */
-    private $termManager;
+    private TermManager $termManager;
 
     /**
      * @var SearchManager
      */
-    private $searchManager;
+    private SearchManager $searchManager;
 
     public function __construct(
         SerializerInterface $serializer,

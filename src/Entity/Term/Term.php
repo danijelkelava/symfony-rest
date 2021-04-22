@@ -11,30 +11,31 @@ use App\Entity\EntityInterface;
 /**
  * @ORM\Entity(repositoryClass=TermRepository::class)
  */
-class Term implements EntityInterface
+final class Term implements EntityInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      * @Groups({"term:create","term:get"})
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
      */
-    private $totalCount;
+    private int $totalCount;
 
     /**
      * @Groups({"term:get"})
      */
-    private $score;
+    private float $score;
 
     /**
      * @var \DateTimeInterface
@@ -43,10 +44,11 @@ class Term implements EntityInterface
      * @Assert\NotNull()
      * @Assert\Type("DateTimeInterface")
      */
-    private $createdAt;
+    private \DateTime $createdAt;
 
-    public function __construct()
+    public function __construct(string $name)
     {
+        $this->name = $name;
         $this->createdAt = new \DateTime();
     }
 
