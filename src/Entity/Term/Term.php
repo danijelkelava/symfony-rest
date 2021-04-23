@@ -11,7 +11,7 @@ use App\Entity\EntityInterface;
 /**
  * @ORM\Entity(repositoryClass=TermRepository::class)
  */
-final class Term implements EntityInterface
+class Term implements EntityInterface
 {
     /**
      * @ORM\Id

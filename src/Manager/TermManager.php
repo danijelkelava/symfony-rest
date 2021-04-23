@@ -89,7 +89,7 @@ final class TermManager
 	 * @param int $totalCount
 	 * @return float
 	 */
-	public function calculateScore(int $totalCount, int $maxTotalCount) : float
+	public function calculateScore(int $totalCount, ?int $maxTotalCount) : float
 	{
 		$maxCount = $totalCount > $maxTotalCount ? $totalCount : $maxTotalCount;
 
@@ -107,7 +107,7 @@ final class TermManager
 		return $this->repository->findOneBy($criteria);
 	}
 
-	public function getMaxTotalCount() : int
+	public function getMaxTotalCount() : ?int
 	{
 		return $this->repository->getMaxTotalCount();
 	}

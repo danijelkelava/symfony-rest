@@ -5,5 +5,5 @@ namespace App\Service;
 
 interface ClientInterface
 {
-    public function getClient();
+	public function request(array $data);
 }

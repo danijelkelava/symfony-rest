@@ -18,7 +18,7 @@ final class GithubAPIService extends AbstractClient
      */
     public function searchIssues(string $term) : TraceableResponse
     {
-        $response = $this->client->request(
+        $response = $this->request(
             'GET',
             'https://api.github.com/search/issues',
             [

@@ -2,12 +2,13 @@
 
 namespace App\Manager;
 
+use App\Service\ClientInterface;
 use App\Service\GithubAPIService;
 use Symfony\Component\HttpClient\Response\TraceableResponse;
 
 final class SearchManager 
 {
-	private GithubAPIService $service;
+	private ClientInterface $service;
 
 	public function __construct(GithubAPIService $service)
 	{

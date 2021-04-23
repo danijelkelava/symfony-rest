@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use App\Service\ClientInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-abstract class AbstractClient
+abstract class AbstractClient implements ClientInterface
 {
 
     /**
@@ -15,5 +16,10 @@ abstract class AbstractClient
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
+    }
+
+    public function request(array $data)
+    {
+        return $this->client->request($data);
     }
 }
