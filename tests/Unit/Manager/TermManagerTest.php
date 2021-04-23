@@ -58,19 +58,6 @@ class TermManagerTest extends KernelTestCase
 	}
 
 	/** @test */
-	public function term_manager_creates_term_instance()
-	{
-		$data = ['name' => 'someTestTerm'];
-
-		$json = json_encode($data);
-
-		$term = $this->termManager->createFromJson($json, ['term:create']);
-
-		$this->assertInstanceOf(EntityInterface::class, $term);
-	
-	}
-
-	/** @test */
 	public function calculate_score_method_is_calculating_properly()
 	{
 

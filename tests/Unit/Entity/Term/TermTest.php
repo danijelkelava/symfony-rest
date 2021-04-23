@@ -18,6 +18,8 @@ class TermTest extends KernelTestCase
 	 */
     public function setUp() : void
 	{
+		// enable mocking final classes
+		\DG\BypassFinals::enable();
 		$kernel = self::bootKernel();
 
 		DatabasePrimer::prime($kernel);
@@ -36,11 +38,13 @@ class TermTest extends KernelTestCase
 	/** @test */
 	public function can_term_be_saved_in_database()
 	{
-		$term = new Term();
+		$term = new Term('test');
+
+		$this->assertNotNull($term->getName());
+		$this->assertNotNull($term->getCreatedAt());
 
 		$this->assertInstanceOf('DateTimeInterface', $term->getCreatedAt());
 
-		$term->setName('Danijel');
 		$term->setTotalCount(1234);
 
 		$this->entityManager->persist($term);
@@ -49,7 +53,7 @@ class TermTest extends KernelTestCase
 
 		$termRepository = $this->entityManager->getRepository(Term::class);
 
-		$termRecord = $termRepository->findOneBy(['name' => 'Danijel']);
+		$termRecord = $termRepository->findOneBy(['name' => 'test']);
 
 		$this->assertEquals(1234, $termRecord->getTotalCount());
 	}

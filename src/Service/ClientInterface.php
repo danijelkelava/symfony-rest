@@ -2,8 +2,7 @@
 
 namespace App\Service;
 
-
 interface ClientInterface
 {
-	public function request(array $data);
+	public function request(string $method, string $url, array $options = []);
 }

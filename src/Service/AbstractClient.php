@@ -18,8 +18,8 @@ abstract class AbstractClient implements ClientInterface
         $this->client = $client;
     }
 
-    public function request(array $data)
+    public function request(string $method, string $url, array $options = [])
     {
-        return $this->client->request($data);
+        return $this->client->request($method, $url, $options);
     }
 }

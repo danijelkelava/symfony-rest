@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Service\AbstractClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\HttpClient\Response\TraceableResponse;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class GithubAPIService extends AbstractClient
 {
@@ -16,7 +16,7 @@ final class GithubAPIService extends AbstractClient
      * @param string $term
      * @return TraceableResponse
      */
-    public function searchIssues(string $term) : TraceableResponse
+    public function searchIssues(string $term) : ResponseInterface
     {
         $response = $this->request(
             'GET',
@@ -26,7 +26,8 @@ final class GithubAPIService extends AbstractClient
                     'Accept' => 'application/vnd.github.v3+json'
                 ],
                 'query' => [
-                    'q' => $term
+                    'q' => $term,
+                    'per_page' => 1
                 ]
             ]
         );
